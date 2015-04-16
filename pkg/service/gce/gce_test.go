@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package service
+package gce
 
 import (
 	"fmt"
@@ -28,6 +28,7 @@ import (
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/api/testapi"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/client"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/runtime"
+	"github.com/GoogleCloudPlatform/kubernetes/pkg/service"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/util"
 )
 
@@ -254,7 +255,7 @@ func TestSyncEndpointsEmpty(t *testing.T) {
 		serverResponse{http.StatusOK, &api.Endpoints{}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -267,7 +268,7 @@ func TestSyncEndpointsError(t *testing.T) {
 		serverResponse{http.StatusOK, &api.Endpoints{}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err == nil {
 		t.Errorf("unexpected non-error")
 	}
@@ -297,7 +298,7 @@ func TestSyncEndpointsItemsPreserveNoSelector(t *testing.T) {
 		}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -331,7 +332,7 @@ func TestSyncEndpointsProtocolTCP(t *testing.T) {
 		}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -365,7 +366,7 @@ func TestSyncEndpointsProtocolUDP(t *testing.T) {
 		}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -396,7 +397,7 @@ func TestSyncEndpointsItemsEmptySelectorSelectsAll(t *testing.T) {
 		}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -440,7 +441,7 @@ func TestSyncEndpointsItemsPreexisting(t *testing.T) {
 		}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -483,7 +484,7 @@ func TestSyncEndpointsItemsPreexistingIdentical(t *testing.T) {
 		}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -511,7 +512,7 @@ func TestSyncEndpointsItems(t *testing.T) {
 		serverResponse{http.StatusOK, &api.Endpoints{}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -555,7 +556,7 @@ func TestSyncEndpointsPodError(t *testing.T) {
 		serverResponse{http.StatusOK, &api.Endpoints{}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err == nil {
 		t.Error("Unexpected non-error")
 	}
@@ -588,7 +589,7 @@ func TestSyncEndpointsItemsWithLabels(t *testing.T) {
 		serverResponse{http.StatusOK, &api.Endpoints{}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -651,7 +652,7 @@ func TestSyncEndpointsItemsPreexistingLabelsChange(t *testing.T) {
 		}})
 	defer testServer.Close()
 	client := client.NewOrDie(&client.Config{Host: testServer.URL, Version: testapi.Version()})
-	endpoints := NewEndpointController(client)
+	endpoints := service.GetEndpointsController("gce", client)
 	if err := endpoints.SyncServiceEndpoints(); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
