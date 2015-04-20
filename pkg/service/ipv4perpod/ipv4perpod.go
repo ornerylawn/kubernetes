@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-package gce
+package ipv4perpod
 
 import (
 	"fmt"
@@ -33,29 +33,29 @@ import (
 	"github.com/golang/glog"
 )
 
-const Name = "gce"
+const Name = "ipv4perpod"
 
-// GCEEndpointsController manages selector-based service endpoints for
-// GCE's ip-per-pod environment.
-type GCEEndpointsController struct {
+// IPv4PerPod manages selector-based service endpoints for the
+// ipv4-per-pod model.
+type IPv4PerPod struct {
 	client *client.Client
 }
 
 func init() {
 	service.RegisterEndpointsController(Name, func(c *client.Client) service.EndpointsController {
-		return NewGCEEndpointsController(c)
+		return NewIPv4PerPod(c)
 	})
 }
 
-// NewGCEEndpointsController returns a new *GCEEndpointsController.
-func NewGCEEndpointsController(client *client.Client) *GCEEndpointsController {
-	return &GCEEndpointsController{
+// NewIPv4PerPod returns a new *IPv4PerPod.
+func NewIPv4PerPod(client *client.Client) *IPv4PerPod {
+	return &IPv4PerPod{
 		client: client,
 	}
 }
 
 // SyncServiceEndpoints syncs endpoints for services with selectors.
-func (e *GCEEndpointsController) SyncServiceEndpoints() error {
+func (e *IPv4PerPod) SyncServiceEndpoints() error {
 	services, err := e.client.Services(api.NamespaceAll).List(labels.Everything())
 	if err != nil {
 		glog.Errorf("Failed to list services: %v", err)

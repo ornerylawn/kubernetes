@@ -37,7 +37,7 @@ import (
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/namespace"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/resourcequota"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/service"
-	"github.com/GoogleCloudPlatform/kubernetes/pkg/service/gce"
+	"github.com/GoogleCloudPlatform/kubernetes/pkg/service/ipv4perpod"
 	"github.com/GoogleCloudPlatform/kubernetes/pkg/util"
 
 	"github.com/golang/glog"
@@ -132,7 +132,7 @@ func (s *CMServer) AddFlags(fs *pflag.FlagSet) {
 	fs.Var(resource.NewQuantityFlagValue(&s.NodeMemory), "node_memory", "The amount of memory (in bytes) provisioned on each node")
 	fs.StringVar(&s.ClusterName, "cluster_name", s.ClusterName, "The instance prefix for the cluster")
 	fs.BoolVar(&s.EnableProfiling, "profiling", false, "Enable profiling via web interface host:port/debug/pprof/")
-	fs.StringVar(&s.EndpointsController, "endpoints_controller", gce.Name, "The endpoints controller for syncing service endpoints")
+	fs.StringVar(&s.EndpointsController, "endpoints_controller", ipv4perpod.Name, "The endpoints controller for syncing service endpoints")
 }
 
 func (s *CMServer) verifyMinionFlags() {
